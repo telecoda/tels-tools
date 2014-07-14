@@ -4,8 +4,8 @@ Handy dev tools to make like easier.
 
 Written by telecoda, probably only used by telecoda
 
-## json-encode
-Converts valid JSON string into a URL encoded version
+## json-escape
+Converts valid JSON string into a string with escaped Quotes
 
-## json-decode
-Converts URL encoded JSON string to a pretty printed version
+## json-unescape
+Converts escape quated JSON string into pretty printed JSON
