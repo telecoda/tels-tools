@@ -1,2 +1,3 @@
 # ignore tool binaries
 json-escape/json-escape
+json-unescape/json-unescape
