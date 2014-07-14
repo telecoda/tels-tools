@@ -1,0 +1,82 @@
+// command line tool to remove escape quotes in JSON string
+package main
+
+import (
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
+	"strconv"
+)
+
+var verboseMode bool
+
+func init() {
+
+	flag.BoolVar(&verboseMode, "v", false, "Verbose output")
+}
+
+var Usage = func() {
+	fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
+	flag.PrintDefaults()
+}
+
+// read data from stdin and convert to JSON
+func main() {
+
+	flag.Parse()
+
+	inputQuotedJSON, err := ioutil.ReadAll(os.Stdin)
+
+	// remove trailing line feed
+	lastChar := len(inputQuotedJSON)
+
+	inputQuotedJSON = inputQuotedJSON[0 : lastChar-1]
+
+	if err != nil {
+		log.Fatalf("Error reading input: %v", err)
+		return
+	}
+
+	if verboseMode {
+		fmt.Println("Input Quoted JSON:")
+		fmt.Println(string(inputQuotedJSON))
+	}
+
+	unescapedJSON, err := strconv.Unquote(string(inputQuotedJSON))
+
+	if err != nil {
+		log.Fatalf("Error unescaping JSON: %v", err)
+		return
+	}
+
+	if verboseMode {
+		fmt.Println("Unescaped JSON:")
+
+		fmt.Println(unescapedJSON)
+	}
+
+	// unmarshal raw byte string to object
+	var genericObject interface{}
+
+	err = json.Unmarshal([]byte(unescapedJSON), &genericObject)
+
+	if err != nil {
+		log.Fatalf("Error JSON is not valid: %v", err)
+	}
+
+	// marshal back to byte string
+	outputJSON, err := json.MarshalIndent(genericObject, "", "  ")
+
+	if err != nil {
+		log.Fatalf("Error coverting object to JSON: %v", err)
+	}
+
+	if verboseMode {
+		fmt.Println("Formatted JSON:")
+	}
+	fmt.Println(string(outputJSON))
+
+}

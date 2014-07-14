@@ -23,7 +23,7 @@ var Usage = func() {
 	flag.PrintDefaults()
 }
 
-// read data from stdin and convert to URL encoded JSON
+// read data from stdin and convert to escape quoted JSON
 func main() {
 
 	flag.Parse()
